@@ -4,24 +4,17 @@ import sqlite3
 class Database:
 
     def __init__(self):
-
         self.conn = sqlite3.connect("omega_memory.db")
-
         self.create_table()
-
 
 
     def create_table(self):
 
         query = """
         CREATE TABLE IF NOT EXISTS memories(
-
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-            information TEXT,
-
-            category TEXT
-
+            information TEXT NOT NULL,
+            category TEXT NOT NULL
         )
         """
 
@@ -32,40 +25,33 @@ class Database:
 
     def add_memory(self, information, category):
 
-        # Check duplicate memory
+        # Check if memory already exists
         check_query = """
         SELECT * FROM memories
         WHERE information = ?
+        AND category = ?
         """
 
         existing = self.conn.execute(
             check_query,
-            (information,)
+            (information, category)
         ).fetchone()
 
 
-        # Already exists
-        if existing:
-            return
+        # Save only if memory is new
+        if existing is None:
 
+            query = """
+            INSERT INTO memories(information, category)
+            VALUES (?, ?)
+            """
 
-
-        query = """
-        INSERT INTO memories(information, category)
-        VALUES (?,?)
-        """
-
-
-        self.conn.execute(
-            query,
-            (
-                information,
-                category
+            self.conn.execute(
+                query,
+                (information, category)
             )
-        )
 
-
-        self.conn.commit()
+            self.conn.commit()
 
 
 
@@ -77,9 +63,7 @@ class Database:
         ORDER BY id DESC
         """
 
-
         result = self.conn.execute(query)
-
 
         return result.fetchall()
 
@@ -93,16 +77,45 @@ class Database:
         WHERE information LIKE ?
         """
 
+        result = self.conn.execute(
+            query,
+            (f"%{keyword}%",)
+        )
+
+        return result.fetchall()
+
+
+
+    def get_memories_by_category(self, category):
+
+        query = """
+        SELECT information, category
+        FROM memories
+        WHERE category = ?
+        """
 
         result = self.conn.execute(
             query,
-            (
-                "%" + keyword + "%",
-            )
+            (category,)
         )
 
-
         return result.fetchall()
+
+
+
+    def delete_memory(self, memory_id):
+
+        query = """
+        DELETE FROM memories
+        WHERE id = ?
+        """
+
+        self.conn.execute(
+            query,
+            (memory_id,)
+        )
+
+        self.conn.commit()
 
 
 
@@ -112,7 +125,11 @@ class Database:
         DELETE FROM memories
         """
 
-
         self.conn.execute(query)
-
         self.conn.commit()
+
+
+
+    def close(self):
+
+        self.conn.close()

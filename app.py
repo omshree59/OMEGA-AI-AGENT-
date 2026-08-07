@@ -17,14 +17,14 @@ while True:
     user = input("You: ")
 
 
-    if user.lower() in ["exit", "quit", "/bye"]:
+    if user.lower().strip() in ["exit", "quit", "/bye"]:
         print("OMEGA AI shutting down...")
         break
 
 
 
     # Show memory
-    if user.lower() == "memory":
+    if user.lower().strip() == "memory":
 
         print("\n===== SHORT TERM MEMORY =====")
         memory.show_memory()
@@ -103,9 +103,21 @@ Current User Message:
 Answer naturally.
 
 IMPORTANT:
-Only use information from memories.
-If you don't know something, say you don't know.
-Never invent names, facts, or previous conversations.
+You are OMEGA AI, a personal AI assistant.
+
+You have access to stored user information.
+Use it naturally when relevant.
+
+The stored information is NOT a previous conversation.
+It is only facts/preferences the user shared earlier.
+
+Do not invent:
+- previous meetings
+- previous chats
+- events that did not happen
+- emotions or actions
+
+Respond naturally like a helpful assistant.
 """
 
 
@@ -141,9 +153,14 @@ Never invent names, facts, or previous conversations.
 
         if word in user.lower():
 
+            category = "personal"
+            if "creator" in user.lower() or "created" in user.lower():
+                category = "project"
+            elif "like" in user.lower() or "love" in user.lower():
+                category = "interest"
             database.add_memory(
                 user,
-                "personal"
+                category
             )
 
             break
