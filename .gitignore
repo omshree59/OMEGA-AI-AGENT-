@@ -1,0 +1,15 @@
+# Virtual environment
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Database (personal memory)
+omega_memory.db
+
+# Environment variables
+.env
+
+# Ollama files
+.ollama/
