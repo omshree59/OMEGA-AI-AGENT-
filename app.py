@@ -122,12 +122,18 @@ Never invent names, facts, or previous conversations.
     # Save important information
     important_words = [
         "my name is",
+        "my name is",
+        "i am",
         "i like",
         "i love",
         "i have",
         "i want",
         "i created",
-        "i built"
+        "i built",
+        "creator of",
+        "creator",
+        "maker"
+        "made"
     ]
 
 
