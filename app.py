@@ -8,7 +8,7 @@ database = Database()
 
 
 print("=" * 50)
-print("🤖 OMEGA AI AGENT")
+print("🤖 OMEGA AGENTIC AI ")
 print("=" * 50)
 
 
